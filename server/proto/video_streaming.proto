@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package video_streaming;
+
+service VideoService {
+    rpc NewUser(ClientInfoWithLoginMessage) returns (EmptyMessage);
+    rpc SendVideoToServer(VideoClusterToServerMessage) returns (EmptyMessage);
+    rpc GetVideoFromServer(ClientInfoWithLoginMessage) returns (stream VideoDataToFrontMessage);
+}
+
+// not to use basic google.Empty now, may be later change 
+message EmptyMessage {
+}
+
+// later merge with ClientInfoMessage if need
+message ClientInfoWithLoginMessage {
+    uint64 confId = 1;
+    uint32 userId = 2;
+    string userLogin = 3;
+    bool isAdmin = 4;
+}
+
+
+// it depends on how it will look on front
+// video with size nxm (pic by pic in a row)
+message VideoMessage {
+    bytes data = 1;
+    uint32 n = 2;
+    uint32 m = 3;
+}
+
+message VideoClusterToServerMessage {
+    VideoMessage videoData = 1;
+    ClientInfoWithLoginMessage userInfo = 2;
+    uint64 timeStamp = 3;
+}
+
+message VideoDataToFrontMessage {
+    repeated VideoMessage videoMessage = 1;
+    repeated string userLogins = 2;
+}
