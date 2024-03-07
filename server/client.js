@@ -3,26 +3,93 @@ const grpc = require("grpc-web");
 
 const { EmptyMessage, ClientInfoWithLoginMessage, VideoClusterToServerMessage, VideoDataToFrontMessage, VideoMessage } = require('./proto/video_streaming_pb.js');
 const { VideoServiceClient } = require('./proto/video_streaming_grpc_web_pb.js');
-
+var width = 320;    // We will scale the photo width to this
+var height = 0;     // This will be computed based on the input stream
+var interval = 10;
+var streaming = false;
+var IS_ADMIN = true;
 var client = new VideoServiceClient('http://0.0.0.0:8085');
 
+var video = document.getElementById('video');
+var canvas = document.getElementById('canvas');
+var photo = document.getElementById('photo');
+var startbutton = document.getElementById('startbutton');
 //async !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+async function startup() {
+    video = document.getElementById('video');
+    photo = document.getElementById('photo');
+    startbutton = document.getElementById('startbutton');
+    await navigator.mediaDevices
+    .getUserMedia({ video: true, audio: false })
+    .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch((err) => {
+        console.error(`An error occurred: ${err}`);
+    });
+    video.addEventListener(
+        "canplay",
+        (ev) => {
+          if (!streaming) {
+            height = (video.videoHeight / video.videoWidth) * width;
+      
+            video.setAttribute("width", width);
+            video.setAttribute("height", height);
+            canvas.setAttribute("width", width);
+            canvas.setAttribute("height", height);
+            streaming = true;
+          }
+        },
+        false,
+    );
+    startbutton.addEventListener(
+        "click",
+        (ev) => {
+          takepicture();
+          ev.preventDefault();
+        },
+        false,
+    );
+    get_photos();
+    clearphoto();
+}
+async function get_photos(){
+    setInterval(sendVideo, interval);
+}
+async function clearphoto() {
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#AAA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+}
+async function takepicture() {
+    const context = canvas.getContext("2d");
+    if (width && height) {
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+      return canvas.toDataURL("image/jpeg");
+    } else {
+      clearphoto();
+    }
+}
 async function getVideo() {
     var msg = new ClientInfoWithLoginMessage();
+    console.log("Huy");
     msg.setConfid(123);
     msg.setUserid(456);
     msg.setUserlogin("Alex");
-    msg.setIsadmin(true);
-
+    msg.setIsadmin(IS_ADMIN);
+    var videos = [];
+    var ids = [];
     var stream = client.getVideoFromServer(msg, {"Access-Control-Allow-Origin": "*"});
     stream.on('data', function(response) {
         console.log("GET VIDEO");
-
-        console.log(response.getUserloginsList());
-        console.log(response.getVideomessageList()[0].getData());
-        console.log(response.getVideomessageList()[0].getN());
-        console.log(response.getVideomessageList()[0].getM());
+        ids = response.getUserloginsList();
+        videos = response.getVideomessageList();
+    });
+    stream.on('end', function(end) {
+        getVideo();
     });
 }
 
@@ -31,23 +98,22 @@ async function sendVideo() {
     msgui.setConfid(123);
     msgui.setUserid(456);
     msgui.setUserlogin("Alex");
-    msgui.setIsadmin(true);
+    msgui.setIsadmin(IS_ADMIN);
 
     var msgvid = new VideoMessage();
-    const data = new Int8Array(2);
-    data[0] = 100;
-    data[1] = 100;
+    let data = await takepicture();
     msgvid.setData(data);
-    msgvid.setN(57);
+    msgvid.setN(0);
     msgvid.setM(99);
 
-    var msg = new VideoClusterToServerMessage();
+    let msg = new VideoClusterToServerMessage();
+    msg.setVideodata(msgvid);
     msg.setUserinfo(msgui);
     msg.setTimestamp(321);
 
     client.sendVideoToServer(msg, {"Access-Control-Allow-Origin": "*"}, (error, response) => {
-       console.log(error);
-       console.log(response);
+       //console.log(error);
+       //console.log(response);
     });
 }
 
@@ -56,15 +122,15 @@ async function NewUser() {
     msg.setConfid(123);
     msg.setUserid(456);
     msg.setUserlogin("Alex");
-    msg.setIsadmin(true);
+    msg.setIsadmin(IS_ADMIN);
 
     client.newUser(msg, {"Access-Control-Allow-Origin": "*"}, (error, response) => {
-        console.log(response);
-        console.log(error);
+        //console.log(response);
+        //console.log(error);
     });
 }
 
-
 NewUser();
+startup();
 getVideo();
 sendVideo();

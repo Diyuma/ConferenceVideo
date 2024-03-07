@@ -26,10 +26,10 @@ class VideoMessage(_message.Message):
     DATA_FIELD_NUMBER: _ClassVar[int]
     N_FIELD_NUMBER: _ClassVar[int]
     M_FIELD_NUMBER: _ClassVar[int]
-    data: bytes
+    data: str
     n: int
     m: int
-    def __init__(self, data: _Optional[bytes] = ..., n: _Optional[int] = ..., m: _Optional[int] = ...) -> None: ...
+    def __init__(self, data: _Optional[str] = ..., n: _Optional[int] = ..., m: _Optional[int] = ...) -> None: ...
 
 class VideoClusterToServerMessage(_message.Message):
     __slots__ = ("videoData", "userInfo", "timeStamp")

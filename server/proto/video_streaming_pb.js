@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
+var global =
+    (typeof globalThis !== 'undefined' && globalThis) ||
+    (typeof window !== 'undefined' && window) ||
+    (typeof global !== 'undefined' && global) ||
+    (typeof self !== 'undefined' && self) ||
+    (function () { return this; }).call(null) ||
+    Function('return this')();
 
 goog.exportSymbol('proto.video_streaming.ClientInfoWithLoginMessage', null, global);
 goog.exportSymbol('proto.video_streaming.EmptyMessage', null, global);
@@ -478,7 +484,7 @@ proto.video_streaming.VideoMessage.prototype.toObject = function(opt_includeInst
  */
 proto.video_streaming.VideoMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
-    data: msg.getData_asB64(),
+    data: jspb.Message.getFieldWithDefault(msg, 1, ""),
     n: jspb.Message.getFieldWithDefault(msg, 2, 0),
     m: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
@@ -518,7 +524,7 @@ proto.video_streaming.VideoMessage.deserializeBinaryFromReader = function(msg, r
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      var value = /** @type {string} */ (reader.readString());
       msg.setData(value);
       break;
     case 2:
@@ -558,9 +564,9 @@ proto.video_streaming.VideoMessage.prototype.serializeBinary = function() {
  */
 proto.video_streaming.VideoMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getData_asU8();
+  f = message.getData();
   if (f.length > 0) {
-    writer.writeBytes(
+    writer.writeString(
       1,
       f
     );
@@ -583,7 +589,7 @@ proto.video_streaming.VideoMessage.serializeBinaryToWriter = function(message, w
 
 
 /**
- * optional bytes data = 1;
+ * optional string data = 1;
  * @return {string}
  */
 proto.video_streaming.VideoMessage.prototype.getData = function() {
@@ -592,35 +598,11 @@ proto.video_streaming.VideoMessage.prototype.getData = function() {
 
 
 /**
- * optional bytes data = 1;
- * This is a type-conversion wrapper around `getData()`
- * @return {string}
- */
-proto.video_streaming.VideoMessage.prototype.getData_asB64 = function() {
-  return /** @type {string} */ (jspb.Message.bytesAsB64(
-      this.getData()));
-};
-
-
-/**
- * optional bytes data = 1;
- * Note that Uint8Array is not supported on all browsers.
- * @see http://caniuse.com/Uint8Array
- * This is a type-conversion wrapper around `getData()`
- * @return {!Uint8Array}
- */
-proto.video_streaming.VideoMessage.prototype.getData_asU8 = function() {
-  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
-      this.getData()));
-};
-
-
-/**
- * @param {!(string|Uint8Array)} value
+ * @param {string} value
  * @return {!proto.video_streaming.VideoMessage} returns this
  */
 proto.video_streaming.VideoMessage.prototype.setData = function(value) {
-  return jspb.Message.setProto3BytesField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

@@ -1,6 +1,7 @@
 {
   "name": "grpc-web-commonjs-example",
   "dependencies": {
+    "@grpc/proto-loader": "^0.7.10",
     "@regosen/gapless-5": "^1.5.0",
     "collections": "^5.1.13",
     "extendable-media-recorder": "^9.1.6",
@@ -9,8 +10,12 @@
     "grpc-web": "^1.5.0",
     "p5": "^1.9.0",
     "path": "^0.12.7",
+    "process": "^0.11.10",
+    "protobufjs": "^7.2.6",
+    "protoc-gen-js": "^3.21.2",
     "stream": "^0.0.2",
-    "tone": "^14.7.77"
+    "tone": "^14.7.77",
+    "xhr2": "^0.2.1"
   },
   "devDependencies": {
     "browserify": "^17.0.0",

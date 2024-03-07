@@ -24,7 +24,7 @@ message ClientInfoWithLoginMessage {
 // it depends on how it will look on front
 // video with size nxm (pic by pic in a row)
 message VideoMessage {
-    bytes data = 1;
+    string data = 1;
     uint32 n = 2;
     uint32 m = 3;
 }
