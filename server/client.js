@@ -3,15 +3,17 @@ const grpc = require("grpc-web");
 
 const { EmptyMessage, ClientInfoWithLoginMessage, VideoClusterToServerMessage, VideoDataToFrontMessage, VideoMessage } = require('./proto/video_streaming_pb.js');
 const { VideoServiceClient } = require('./proto/video_streaming_grpc_web_pb.js');
-var width = 320;    // We will scale the photo width to this
+var width = 240;    // We will scale the photo width to this
 var height = 0;     // This will be computed based on the input stream
-var interval = 10;
+var interval = 100;
+var canvases = {};
+var images = {};
 var streaming = false;
 var IS_ADMIN = true;
 var client = new VideoServiceClient('http://0.0.0.0:8085');
 
 var video = document.getElementById('video');
-var canvas = document.getElementById('canvas');
+var canvas = document.createElement('canvas');
 var photo = document.getElementById('photo');
 var startbutton = document.getElementById('startbutton');
 //async !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -43,14 +45,6 @@ async function startup() {
         },
         false,
     );
-    startbutton.addEventListener(
-        "click",
-        (ev) => {
-          takepicture();
-          ev.preventDefault();
-        },
-        false,
-    );
     get_photos();
     clearphoto();
 }
@@ -73,6 +67,23 @@ async function takepicture() {
       clearphoto();
     }
 }
+async function drawObject(ids, videos){
+    for(var i = 0;i < ids.length; i++){
+        images[ids[i]] = videos[i].getData()
+        //console.log(images[ids[i]])
+        if(canvases[ids[i]] == null){
+            canvases[ids[i]] = document.createElement('canvas');
+            canvases[ids[i]].id = ids[i];
+            canvases[ids[i]].width = 320;
+            canvases[ids[i]].height = 320;
+            document.body.appendChild(canvases[ids[i]]);
+        }
+        context = canvases[ids[i]].getContext("2d");
+        var image = new Image();
+        image.src = images[ids[i]];
+        context.drawImage(image, 0, 0);
+    }
+}
 async function getVideo() {
     var msg = new ClientInfoWithLoginMessage();
     console.log("Huy");
@@ -84,9 +95,11 @@ async function getVideo() {
     var ids = [];
     var stream = client.getVideoFromServer(msg, {"Access-Control-Allow-Origin": "*"});
     stream.on('data', function(response) {
-        console.log("GET VIDEO");
-        ids = response.getUserloginsList();
-        videos = response.getVideomessageList();
+        if(response != null){
+            ids = response.getUserloginsList();
+            videos = response.getVideomessageList();
+            drawObject(ids, videos)
+        }
     });
     stream.on('end', function(end) {
         getVideo();

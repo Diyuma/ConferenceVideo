@@ -49,8 +49,8 @@ class VideoServiceServicer(video_streaming_pb2_grpc.VideoServiceServicer):
             ids = [str(i[0]) for i in ids]
             l_image = cursor.execute("SELECT l_image FROM conf_" + str(request.confId)).fetchall()
             l_image = [video_streaming_pb2.VideoMessage(data=str(i[0]), n=10, m=10) for i in l_image]
-            time.sleep(0.5)
-            yield video_streaming_pb2.VideoDataToFrontMessage(videoMessage=l_image, userLogins=ids[0])
+            time.sleep(0.05)
+            yield video_streaming_pb2.VideoDataToFrontMessage(videoMessage=l_image, userLogins=ids)
         connection.close()
 
 
