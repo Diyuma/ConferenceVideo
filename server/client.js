@@ -1,3 +1,7 @@
+// TODO :: to easy merge with sound need realization of function RunVideo(conference id, user id) to run every needed func to init"
+// TODO :: need realization of functions StopVideoSending() ; StartVideoSending(conference id, user id) to stop and start any video sending"
+// TODO :: need realization of functions StopVideoGetting() ; StartVideoGetting(conference id, user id) to stop and start any video sending"
+
 const protoLoader = require("@grpc/proto-loader");
 const grpc = require("grpc-web");
 
