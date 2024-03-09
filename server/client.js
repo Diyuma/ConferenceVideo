@@ -14,6 +14,10 @@ var canvases = {};
 var images = {};
 var streaming = false;
 var IS_ADMIN = true;
+var c_id = 0;
+var u_id = 0;
+var streaming_vid = false;
+var send_video = false;
 var client = new VideoServiceClient('http://0.0.0.0:8085');
 
 var video = document.getElementById('video');
@@ -91,8 +95,8 @@ async function drawObject(ids, videos){
 async function getVideo() {
     var msg = new ClientInfoWithLoginMessage();
     console.log("Huy");
-    msg.setConfid(123);
-    msg.setUserid(456);
+    msg.setConfid(c_id);
+    msg.setUserid(u_id);
     msg.setUserlogin("Alex");
     msg.setIsadmin(IS_ADMIN);
     var videos = [];
@@ -104,6 +108,9 @@ async function getVideo() {
             videos = response.getVideomessageList();
             drawObject(ids, videos)
         }
+        if(!streaming_vid){
+            stream.cancel()
+        }
     });
     stream.on('end', function(end) {
         getVideo();
@@ -111,33 +118,35 @@ async function getVideo() {
 }
 
 async function sendVideo() {
-    var msgui = new ClientInfoWithLoginMessage();
-    msgui.setConfid(123);
-    msgui.setUserid(456);
-    msgui.setUserlogin("Alex");
-    msgui.setIsadmin(IS_ADMIN);
+    if(send_video){
+        var msgui = new ClientInfoWithLoginMessage();
+        msgui.setConfid(c_id);
+        msgui.setUserid(u_id);
+        msgui.setUserlogin("Alex");
+        msgui.setIsadmin(IS_ADMIN);
 
-    var msgvid = new VideoMessage();
-    let data = await takepicture();
-    msgvid.setData(data);
-    msgvid.setN(0);
-    msgvid.setM(99);
+        var msgvid = new VideoMessage();
+        let data = await takepicture();
+        msgvid.setData(data);
+        msgvid.setN(0);
+        msgvid.setM(99);
 
-    let msg = new VideoClusterToServerMessage();
-    msg.setVideodata(msgvid);
-    msg.setUserinfo(msgui);
-    msg.setTimestamp(321);
+        let msg = new VideoClusterToServerMessage();
+        msg.setVideodata(msgvid);
+        msg.setUserinfo(msgui);
+        msg.setTimestamp(321);
 
-    client.sendVideoToServer(msg, {"Access-Control-Allow-Origin": "*"}, (error, response) => {
-       //console.log(error);
-       //console.log(response);
-    });
+        client.sendVideoToServer(msg, {"Access-Control-Allow-Origin": "*"}, (error, response) => {
+        //console.log(error);
+        //console.log(response);
+        });
+    }
 }
 
 async function NewUser() {
     var msg = new ClientInfoWithLoginMessage();
-    msg.setConfid(123);
-    msg.setUserid(456);
+    msg.setConfid(c_id);
+    msg.setUserid(u_id);
     msg.setUserlogin("Alex");
     msg.setIsadmin(IS_ADMIN);
 
@@ -147,7 +156,30 @@ async function NewUser() {
     });
 }
 
-NewUser();
-startup();
-getVideo();
-sendVideo();
+async function StopVideoGetting(){
+    streaming_vid = false;
+}
+
+async function StartVideoGetting(){
+    streaming_vid = true;
+    getVideo();
+}
+
+async function StopVideoSending(){
+    send_video = false;
+}
+
+async function StartVideoSending(){
+    send_video = true;
+}
+
+async function RunVideo(conference_id, user_id, is_admin){//Добавил is_admin(bool)
+    u_id = user_id;
+    c_id = conference_id;
+    IS_ADMIN = is_admin;
+    NewUser();
+    startup();
+    getVideo();
+    sendVideo();
+}
+RunVideo(100,120,true);
