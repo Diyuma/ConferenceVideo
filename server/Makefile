@@ -38,12 +38,20 @@ stopPython:
 
 # ------- SERVER TARGETS -------
 uploadToServer:
+	npm install
+	npx webpack ./client.js
+
+	-rm -r videoServer
+	mkdir videoServer
+	cp {conferences.db,Dockerfile,Makefile,package-lock.json,package.json,python_test.py,requirements.txt,webpack.config.js} videoServer
+	cp -R proto videoServer
+
 	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 rm -rf "~/conference/videoServer/"
 
-	cd ..
-
 	scp -i ~/.ssh/yconference -r videoServer lehatr@178.154.202.56:~/conference
-	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo mv "~/conference/server" "~/conference/videoServer"
+	scp -i ~/.ssh/yconference dist/main_video.js lehatr@178.154.202.56:"~/conference/html/conference/dist"
+
+	rm -r videoServer
 
 	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker build "~/conference/videoServer" --tag dikiray/conferencevideoserver
 

@@ -1,6 +1,4 @@
-// TODO :: to easy merge with sound need realization of function RunVideo(conference id, user id) to run every needed func to init"
-// TODO :: need realization of functions StopVideoSending() ; StartVideoSending(conference id, user id) to stop and start any video sending"
-// TODO :: need realization of functions StopVideoGetting() ; StartVideoGetting(conference id, user id) to stop and start any video sending"
+// !!!! to test local use http://0.0.0.0:8085
 
 const protoLoader = require("@grpc/proto-loader");
 const grpc = require("grpc-web");
@@ -18,7 +16,7 @@ var c_id = 0;
 var u_id = 0;
 var streaming_vid = false;
 var send_video = false;
-var client = new VideoServiceClient('http://0.0.0.0:8085');
+var client = new VideoServiceClient('https://diyumaconference.ru/'); // !!!! to test local use http://0.0.0.0:8085
 
 var video = document.getElementById('video');
 var canvas = document.createElement('canvas');
@@ -156,24 +154,24 @@ async function NewUser() {
     });
 }
 
-async function StopVideoGetting(){
+window.StopVideoGetting = async function StopVideoGetting(){
     streaming_vid = false;
 }
 
-async function StartVideoGetting(){
+window.StartVideoGetting = async function StartVideoGetting(){
     streaming_vid = true;
     getVideo();
 }
 
-async function StopVideoSending(){
+window.StopVideoSending = async function StopVideoSending(){
     send_video = false;
 }
 
-async function StartVideoSending(){
+window.StartVideoSending = async function StartVideoSending(){
     send_video = true;
 }
 
-async function RunVideo(conference_id, user_id, is_admin){//Добавил is_admin(bool)
+window.RunVideo = async function RunVideo(conference_id, user_id, is_admin){
     u_id = user_id;
     c_id = conference_id;
     IS_ADMIN = is_admin;
@@ -182,4 +180,3 @@ async function RunVideo(conference_id, user_id, is_admin){//Добавил is_ad
     getVideo();
     sendVideo();
 }
-RunVideo(100,120,true);
