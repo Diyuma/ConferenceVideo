@@ -5,6 +5,7 @@ from concurrent import futures
 import time
 import sqlite3
 
+INTERVAL = 0.01
 def add_user(request):
     connection = sqlite3.connect('conferences.db')
     cursor = connection.cursor()
@@ -42,6 +43,7 @@ class VideoServiceServicer(video_streaming_pb2_grpc.VideoServiceServicer):
 
 
     def GetVideoFromServer(self, request, context):
+        global INTERVAL
         connection = sqlite3.connect("conferences.db")
         cursor = connection.cursor()
         for i in range(10**3):#Вините долбоеба на каме
@@ -49,7 +51,7 @@ class VideoServiceServicer(video_streaming_pb2_grpc.VideoServiceServicer):
             ids = [str(i[0]) for i in ids]
             l_image = cursor.execute("SELECT l_image FROM conf_" + str(request.confId)).fetchall()
             l_image = [video_streaming_pb2.VideoMessage(data=str(i[0]), n=10, m=10) for i in l_image]
-            time.sleep(0.05)
+            time.sleep(INTERVAL)
             yield video_streaming_pb2.VideoDataToFrontMessage(videoMessage=l_image, userLogins=ids)
         connection.close()
 
