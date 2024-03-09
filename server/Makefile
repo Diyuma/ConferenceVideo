@@ -23,3 +23,32 @@ buildAndRunAllWithoutServer: buildProtos startEnvoy buildFront
 # тут сервер
 startPython:
 	python3 python_test.py
+
+buildPython:
+	docker build . --tag dikiray/conferencevideoserver
+
+runPython:
+	-docker stop videoServer
+	-docker rm videoServer
+	docker run --name videoServer -p 9090:9090 -d dikiray/conferencevideoserver
+
+stopPython:
+	docker stop videoServer
+	docker rm videoServer
+
+# ------- SERVER TARGETS -------
+uploadToServer:
+	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 rm -rf "~/conference/videoServer/"
+
+	cd ..
+
+	scp -i ~/.ssh/yconference -r videoServer lehatr@178.154.202.56:~/conference
+	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo mv "~/conference/server" "~/conference/videoServer"
+
+	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker build "~/conference/videoServer" --tag dikiray/conferencevideoserver
+
+runOnServer:
+	-ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker stop videoServer
+	-ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker rm videoServer
+	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker run --name videoServer --network conf_net --ip 172.18.0.7 -d \
+				dikiray/conferencevideoserver
