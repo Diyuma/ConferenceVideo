@@ -21,4 +21,7 @@ module.exports = {
         "crypto-browserify": require.resolve('crypto-browserify')
         }
     },
+    output: {
+      filename: 'main_video.js',
+    },
 };
