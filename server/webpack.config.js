@@ -6,6 +6,10 @@ module.exports = {
           process: 'process/browser',
         }),
       ],
+    output: {
+      filename: 'main_video.js',
+          path: path.resolve(__dirname, 'dist'),
+    },
     entry: ['./proto/video_streaming_grpc_web_pb.js', './proto/video_streaming_pb.js'],
     resolve: {
         fallback: {
@@ -20,8 +24,5 @@ module.exports = {
         "crypto": false,
         "crypto-browserify": require.resolve('crypto-browserify')
         }
-    },
-    output: {
-      filename: 'main_video.js',
     },
 };
