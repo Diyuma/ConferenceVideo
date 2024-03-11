@@ -5,7 +5,7 @@ package video_streaming;
 service VideoService {
     rpc NewUser(ClientInfoWithLoginMessage) returns (EmptyMessage);
     rpc SendVideoToServer(VideoClusterToServerMessage) returns (EmptyMessage);
-    rpc GetVideoFromServer(ClientInfoWithLoginMessage) returns (stream VideoDataToFrontMessage);
+    rpc GetVideoFromServer(ClientInfoWithLoginMessage) returns (VideoDataToFrontMessage);
 }
 
 // not to use basic google.Empty now, may be later change 

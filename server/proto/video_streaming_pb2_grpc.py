@@ -24,7 +24,7 @@ class VideoServiceStub(object):
                 request_serializer=proto_dot_video__streaming__pb2.VideoClusterToServerMessage.SerializeToString,
                 response_deserializer=proto_dot_video__streaming__pb2.EmptyMessage.FromString,
                 )
-        self.GetVideoFromServer = channel.unary_stream(
+        self.GetVideoFromServer = channel.unary_unary(
                 '/video_streaming.VideoService/GetVideoFromServer',
                 request_serializer=proto_dot_video__streaming__pb2.ClientInfoWithLoginMessage.SerializeToString,
                 response_deserializer=proto_dot_video__streaming__pb2.VideoDataToFrontMessage.FromString,
@@ -65,7 +65,7 @@ def add_VideoServiceServicer_to_server(servicer, server):
                     request_deserializer=proto_dot_video__streaming__pb2.VideoClusterToServerMessage.FromString,
                     response_serializer=proto_dot_video__streaming__pb2.EmptyMessage.SerializeToString,
             ),
-            'GetVideoFromServer': grpc.unary_stream_rpc_method_handler(
+            'GetVideoFromServer': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVideoFromServer,
                     request_deserializer=proto_dot_video__streaming__pb2.ClientInfoWithLoginMessage.FromString,
                     response_serializer=proto_dot_video__streaming__pb2.VideoDataToFrontMessage.SerializeToString,
@@ -125,7 +125,7 @@ class VideoService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/video_streaming.VideoService/GetVideoFromServer',
+        return grpc.experimental.unary_unary(request, target, '/video_streaming.VideoService/GetVideoFromServer',
             proto_dot_video__streaming__pb2.ClientInfoWithLoginMessage.SerializeToString,
             proto_dot_video__streaming__pb2.VideoDataToFrontMessage.FromString,
             options, channel_credentials,

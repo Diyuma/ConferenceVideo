@@ -204,7 +204,7 @@ proto.video_streaming.VideoServicePromiseClient.prototype.sendVideoToServer =
  */
 const methodDescriptor_VideoService_GetVideoFromServer = new grpc.web.MethodDescriptor(
   '/video_streaming.VideoService/GetVideoFromServer',
-  grpc.web.MethodType.SERVER_STREAMING,
+  grpc.web.MethodType.UNARY,
   proto.video_streaming.ClientInfoWithLoginMessage,
   proto.video_streaming.VideoDataToFrontMessage,
   /**
@@ -219,32 +219,37 @@ const methodDescriptor_VideoService_GetVideoFromServer = new grpc.web.MethodDesc
 
 
 /**
- * @param {!proto.video_streaming.ClientInfoWithLoginMessage} request The request proto
- * @param {?Object<string, string>=} metadata User defined
+ * @param {!proto.video_streaming.ClientInfoWithLoginMessage} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.video_streaming.VideoDataToFrontMessage>}
+ * @param {function(?grpc.web.RpcError, ?proto.video_streaming.VideoDataToFrontMessage)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.video_streaming.VideoDataToFrontMessage>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.video_streaming.VideoServiceClient.prototype.getVideoFromServer =
-    function(request, metadata) {
-  return this.client_.serverStreaming(this.hostname_ +
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
       '/video_streaming.VideoService/GetVideoFromServer',
       request,
       metadata || {},
-      methodDescriptor_VideoService_GetVideoFromServer);
+      methodDescriptor_VideoService_GetVideoFromServer,
+      callback);
 };
 
 
 /**
- * @param {!proto.video_streaming.ClientInfoWithLoginMessage} request The request proto
+ * @param {!proto.video_streaming.ClientInfoWithLoginMessage} request The
+ *     request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.video_streaming.VideoDataToFrontMessage>}
- *     The XHR Node Readable Stream
+ * @return {!Promise<!proto.video_streaming.VideoDataToFrontMessage>}
+ *     Promise that resolves to the response
  */
 proto.video_streaming.VideoServicePromiseClient.prototype.getVideoFromServer =
     function(request, metadata) {
-  return this.client_.serverStreaming(this.hostname_ +
+  return this.client_.unaryCall(this.hostname_ +
       '/video_streaming.VideoService/GetVideoFromServer',
       request,
       metadata || {},

@@ -46,17 +46,18 @@ uploadToServer:
 	cp {conferences.db,Dockerfile,Makefile,package-lock.json,package.json,python_test.py,requirements.txt,webpack.config.js} videoServer
 	cp -R proto videoServer
 
-	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 rm -rf "~/conference/videoServer/"
+	ssh -i $$KEY_PATH $$VM_USER@$$HOST rm -rf "~/conference/videoServer/"
 
-	scp -i ~/.ssh/yconference -r videoServer lehatr@178.154.202.56:~/conference
-	scp -i ~/.ssh/yconference dist/main_video.js lehatr@178.154.202.56:"~/conference/html/conference/dist"
+	scp -i $$KEY_PATH -r videoServer $$VM_USER@$$HOST:~/conference
+	scp -i $$KEY_PATH dist/main_video.js $$VM_USER@$$HOST:"~/conference"
+	ssh -i $$KEY_PATH $$VM_USER@$$HOST sudo mv "~/conference/main_video.js" "~/conference/html/conference/dist/main_video.js"
 
 	rm -r videoServer
 
-	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker build "~/conference/videoServer" --tag dikiray/conferencevideoserver
+	ssh -i $$KEY_PATH $$VM_USER@$$HOST sudo docker build "~/conference/videoServer" --tag dikiray/conferencevideoserver
 
 runOnServer:
-	-ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker stop videoServer
-	-ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker rm videoServer
-	ssh -i ~/.ssh/yconference lehatr@178.154.202.56 sudo docker run --name videoServer --network conf_net --ip 172.18.0.7 -d \
+	-ssh -i $$KEY_PATH $$VM_USER@$$HOST sudo docker stop videoServer
+	-ssh -i $$KEY_PATH $$VM_USER@$$HOST sudo docker rm videoServer
+	ssh -i $$KEY_PATH $$VM_USER@$$HOST sudo docker run --name videoServer --network conf_net --ip 172.18.0.7 -d \
 				dikiray/conferencevideoserver

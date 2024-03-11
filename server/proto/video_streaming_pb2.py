@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bproto/video_streaming.proto\x12\x0fvideo_streaming\"\x0e\n\x0c\x45mptyMessage\"`\n\x1a\x43lientInfoWithLoginMessage\x12\x0e\n\x06\x63onfId\x18\x01 \x01(\x04\x12\x0e\n\x06userId\x18\x02 \x01(\r\x12\x11\n\tuserLogin\x18\x03 \x01(\t\x12\x0f\n\x07isAdmin\x18\x04 \x01(\x08\"2\n\x0cVideoMessage\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\t\n\x01n\x18\x02 \x01(\r\x12\t\n\x01m\x18\x03 \x01(\r\"\xa1\x01\n\x1bVideoClusterToServerMessage\x12\x30\n\tvideoData\x18\x01 \x01(\x0b\x32\x1d.video_streaming.VideoMessage\x12=\n\x08userInfo\x18\x02 \x01(\x0b\x32+.video_streaming.ClientInfoWithLoginMessage\x12\x11\n\ttimeStamp\x18\x03 \x01(\x04\"b\n\x17VideoDataToFrontMessage\x12\x33\n\x0cvideoMessage\x18\x01 \x03(\x0b\x32\x1d.video_streaming.VideoMessage\x12\x12\n\nuserLogins\x18\x02 \x03(\t2\xb6\x02\n\x0cVideoService\x12U\n\x07NewUser\x12+.video_streaming.ClientInfoWithLoginMessage\x1a\x1d.video_streaming.EmptyMessage\x12`\n\x11SendVideoToServer\x12,.video_streaming.VideoClusterToServerMessage\x1a\x1d.video_streaming.EmptyMessage\x12m\n\x12GetVideoFromServer\x12+.video_streaming.ClientInfoWithLoginMessage\x1a(.video_streaming.VideoDataToFrontMessage0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1bproto/video_streaming.proto\x12\x0fvideo_streaming\"\x0e\n\x0c\x45mptyMessage\"`\n\x1a\x43lientInfoWithLoginMessage\x12\x0e\n\x06\x63onfId\x18\x01 \x01(\x04\x12\x0e\n\x06userId\x18\x02 \x01(\r\x12\x11\n\tuserLogin\x18\x03 \x01(\t\x12\x0f\n\x07isAdmin\x18\x04 \x01(\x08\"2\n\x0cVideoMessage\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\t\n\x01n\x18\x02 \x01(\r\x12\t\n\x01m\x18\x03 \x01(\r\"\xa1\x01\n\x1bVideoClusterToServerMessage\x12\x30\n\tvideoData\x18\x01 \x01(\x0b\x32\x1d.video_streaming.VideoMessage\x12=\n\x08userInfo\x18\x02 \x01(\x0b\x32+.video_streaming.ClientInfoWithLoginMessage\x12\x11\n\ttimeStamp\x18\x03 \x01(\x04\"b\n\x17VideoDataToFrontMessage\x12\x33\n\x0cvideoMessage\x18\x01 \x03(\x0b\x32\x1d.video_streaming.VideoMessage\x12\x12\n\nuserLogins\x18\x02 \x03(\t2\xb4\x02\n\x0cVideoService\x12U\n\x07NewUser\x12+.video_streaming.ClientInfoWithLoginMessage\x1a\x1d.video_streaming.EmptyMessage\x12`\n\x11SendVideoToServer\x12,.video_streaming.VideoClusterToServerMessage\x1a\x1d.video_streaming.EmptyMessage\x12k\n\x12GetVideoFromServer\x12+.video_streaming.ClientInfoWithLoginMessage\x1a(.video_streaming.VideoDataToFrontMessageb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,5 +32,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_VIDEODATATOFRONTMESSAGE']._serialized_start=378
   _globals['_VIDEODATATOFRONTMESSAGE']._serialized_end=476
   _globals['_VIDEOSERVICE']._serialized_start=479
-  _globals['_VIDEOSERVICE']._serialized_end=789
+  _globals['_VIDEOSERVICE']._serialized_end=787
 # @@protoc_insertion_point(module_scope)

@@ -7,7 +7,7 @@ const { EmptyMessage, ClientInfoWithLoginMessage, VideoClusterToServerMessage, V
 const { VideoServiceClient } = require('./proto/video_streaming_grpc_web_pb.js');
 var width = 240;    // We will scale the photo width to this
 var height = 0;     // This will be computed based on the input stream
-var interval = 100;
+var interval = 1000;
 var canvases = {};
 var images = {};
 var streaming = false;
@@ -84,7 +84,7 @@ async function drawObject(ids, videos){
             canvases[ids[i]].height = 320;
             document.body.appendChild(canvases[ids[i]]);
         }
-        context = canvases[ids[i]].getContext("2d");
+        const context = canvases[ids[i]].getContext("2d");
         var image = new Image();
         image.src = images[ids[i]];
         context.drawImage(image, 0, 0);
@@ -92,27 +92,40 @@ async function drawObject(ids, videos){
 }
 async function getVideo() {
     var msg = new ClientInfoWithLoginMessage();
-    console.log("Huy");
     msg.setConfid(c_id);
     msg.setUserid(u_id);
     msg.setUserlogin("Alex");
     msg.setIsadmin(IS_ADMIN);
     var videos = [];
     var ids = [];
-    var stream = client.getVideoFromServer(msg, {"Access-Control-Allow-Origin": "*"});
-    stream.on('data', function(response) {
-        if(response != null){
+    // var stream = client.getVideoFromServer(msg, {"Access-Control-Allow-Origin": "*"});
+    // stream.on('data', function(response) {
+    //     if(response != null){
+    //         ids = response.getUserloginsList();
+    //         videos = response.getVideomessageList();
+    //         drawObject(ids, videos)
+    //     }
+    //     if(!streaming_vid){
+    //         stream.cancel()
+    //     }
+    // });
+    // stream.on('end', function(end) {
+    //     getVideo();
+    // });
+    client.getVideoFromServer(msg, {"Access-Control-Allow-Origin": "*"}, (error, response) => {
+        if(response != null) {
             ids = response.getUserloginsList();
             videos = response.getVideomessageList();
             drawObject(ids, videos)
         }
-        if(!streaming_vid){
-            stream.cancel()
-        }
     });
-    stream.on('end', function(end) {
-        getVideo();
-    });
+
+    if(!streaming_vid){
+        return;
+        //stream.cancel()
+    }
+
+    setTimeout(() => getVideo(), interval);
 }
 
 async function sendVideo() {
